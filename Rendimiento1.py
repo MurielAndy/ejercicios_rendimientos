@@ -1,91 +1,69 @@
+import time
+import datetime
 import cProfile
-import os
+
+def fibonacci_recursivo(n):
+    """Calcula el número de Fibonacci de forma recursiva."""
+    if n <= 1:
+        return n
+    return fibonacci_recursivo(n - 1) + fibonacci_recursivo(n - 2)
+
+def fibonacci_iterativo(n):
+    """Calcula el número de Fibonacci de forma iterativa."""
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
+
+def factorial_recursivo(n):
+    """Calcula el factorial de un número de forma recursiva."""
+    if n == 0 or n == 1:
+        return 1
+    return n * factorial_recursivo(n - 1)
+
+def factorial_iterativo(n):
+    """Calcula el factorial de un número de forma iterativa."""
+    resultado = 1
+    for i in range(2, n + 1):
+        resultado *= i
+    return resultado
 
 
-def letra_dni(dni):
-    if len(str(dni)) != 8:
-        raise Exception("El DNI debe tener 8 dígitos")
-    LETRAS_DNI = 'TRWAGMYFPDXBNJZSQVHLCKE'
-    return f"{dni}{LETRAS_DNI[int(dni) % 23]}"
+valores_n = [10, 20, 30, 40, 50]
 
 
-def capitalizar(nombre):
-    nombre=nombre.title()
-   
-    return nombre
+def medir_tiempo(func, n):
+    start_time = datetime.datetime.now()
+    resultado = func(n)
+    end_time = datetime.datetime.now()
+    return resultado, (end_time - start_time).total_seconds()
 
 
-def funcion50():
-
-    csvModifikau=[]
-
-    file = open("50.csv", 'r')
-    lista = file.readlines()
-    file.close()
-
-    for linea in lista:
-        linea = linea.replace("\n","").split(",")
-        csvModifikau.append(capitalizar(linea[0])+","+letra_dni(linea[1])+"\n")
+for n in valores_n:
+    print(f"Calculando para n = {n}...")
     
-    file = open("Lista50.csv", 'w')
-    file.writelines(csvModifikau)
-    file.close()
-    print("Fichero de 50 creado")
-
-    return
-
-
-def funcion1000():
     
-    csvModifikau=[]
-
-    file = open("1000.csv", 'r')
-    lista = file.readlines()
-    file.close()
-
-    for linea in lista:
-        linea = linea.replace("\n","").split(",")
-        csvModifikau.append(capitalizar(linea[0])+","+letra_dni(linea[1])+"\n")
-    
-    file = open("Lista1000.csv", 'w')
-    file.writelines(csvModifikau)
-    file.close()
-    print("Fichero de 1000 creado")
-    return
-
-
-
-while True:
-
-    sel = int(input("Escribe numero de selección:\n1.Lista de 50\n2.Lista de 1000\n3.Borrar listas generadas \n-->"))
-    
-    if sel == 1:
-        if os.path.exists("Lista50.csv"):
-            os.remove("Lista50.csv")
-
-        cProfile.run("funcion50()")
-
-    elif sel == 2:
-        if os.path.exists("Lista1000.csv"):
-            os.remove("Lista1000.csv")
-
-        cProfile.run("funcion1000()")
-    
-    elif sel == 3:
-        if os.path.exists("Lista1000.csv"):
-            os.remove("Lista1000.csv")
-            print("Fichero de 1000 borrado")
-
-        if os.path.exists("Lista50.csv"):
-            os.remove("Lista50.csv")
-            print("Fichero de 50 borrado")
-
-        else:
-            ""
-            
-        print("\n")
-        
-    
+    if n <= 30:
+        resultado_fib_rec, tiempo_fib_rec = medir_tiempo(fibonacci_recursivo, n)
     else:
-        print("introduce numero valido lol\n")
-        
+        resultado_fib_rec, tiempo_fib_rec = "No calculado", "N/A"
+
+    
+    resultado_fib_iter, tiempo_fib_iter = medir_tiempo(fibonacci_iterativo, n)
+
+    
+    resultado_fac_rec, tiempo_fac_rec = medir_tiempo(factorial_recursivo, n)
+
+    
+    resultado_fac_iter, tiempo_fac_iter = medir_tiempo(factorial_iterativo, n)
+
+    
+    print(f"  Fibonacci Recursivo: {resultado_fib_rec}, Tiempo: {tiempo_fib_rec} s")
+    print(f"  Fibonacci Iterativo: {resultado_fib_iter}, Tiempo: {tiempo_fib_iter} s")
+    print(f"  Factorial Recursivo: {resultado_fac_rec}, Tiempo: {tiempo_fac_rec} s")
+    print(f"  Factorial Iterativo: {resultado_fac_iter}, Tiempo: {tiempo_fac_iter} s")
+    print("---------------------------------------------------")
+
+
+print("\nPerfilando Fibonacci Iterativo con cProfile para n=30")
+cProfile.run("fibonacci_iterativo(30)")

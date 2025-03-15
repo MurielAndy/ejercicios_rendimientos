@@ -1,40 +1,91 @@
-import datetime
+import cProfile
+import os
 
-def fibonacci_r(n):
-    if n <= 0:
-        print("El número debe ser un numero entero positivo")
-    elif n == 1:
-        return 1
-    elif n == 2:
-        return 1
-    else:
-        return fibonacci_r(n-1) + fibonacci_r(n-2)
 
-def fibonacci_b(n):
-    A = 0
-    B = 1
-    for i in range(n-1):
-        C = A + B
-        A = B
-        B = C
-    return C
+def letra_dni(dni):
+    if len(str(dni)) != 8:
+        raise Exception("El DNI debe tener 8 dígitos")
+    LETRAS_DNI = 'TRWAGMYFPDXBNJZSQVHLCKE'
+    return f"{dni}{LETRAS_DNI[int(dni) % 23]}"
+
+
+def capitalizar(nombre):
+    nombre=nombre.title()
+   
+    return nombre
+
+
+def funcion50():
+
+    csvModifikau=[]
+
+    file = open("50.csv", 'r')
+    lista = file.readlines()
+    file.close()
+
+    for linea in lista:
+        linea = linea.replace("\n","").split(",")
+        csvModifikau.append(capitalizar(linea[0])+","+letra_dni(linea[1])+"\n")
+    
+    file = open("Lista50.csv", 'w')
+    file.writelines(csvModifikau)
+    file.close()
+    print("Fichero de 50 creado")
+
+    return
+
+
+def funcion1000():
+    
+    csvModifikau=[]
+
+    file = open("1000.csv", 'r')
+    lista = file.readlines()
+    file.close()
+
+    for linea in lista:
+        linea = linea.replace("\n","").split(",")
+        csvModifikau.append(capitalizar(linea[0])+","+letra_dni(linea[1])+"\n")
+    
+    file = open("Lista1000.csv", 'w')
+    file.writelines(csvModifikau)
+    file.close()
+    print("Fichero de 1000 creado")
+    return
+
+
 
 while True:
-    
-    n = int(input("Introduce un número de sucesiones: "))
-    sel = int(input("Escribe numero de selección:\n1.Por recursividad\n2.Por bubcles\n-->"))
+
+    sel = int(input("Escribe numero de selección:\n1.Lista de 50\n2.Lista de 1000\n3.Borrar listas generadas (ya se borran al crearlas de nuevo)\n-->"))
     
     if sel == 1:
-        start_time = datetime.datetime.now()
-        print("El valor de fibonnaci para la sucesion nº:",n,"es:",fibonacci_r(n))
-        end_time = datetime.datetime.now()
-        print("El tiempo de ejecución es:", end_time - start_time,"\n")
+        if os.path.exists("Lista50.csv"):
+            os.remove("Lista50.csv")
+
+        cProfile.run("funcion50()")
 
     elif sel == 2:
-        start_time = datetime.datetime.now()
-        print("El valor de fibonnaci para la sucesion nº:",n,"es:",fibonacci_b(n))
-        end_time = datetime.datetime.now()
-        print("El tiempo de ejecución es:", end_time - start_time,"\n")
+        if os.path.exists("Lista1000.csv"):
+            os.remove("Lista1000.csv")
 
+        cProfile.run("funcion1000()")
+    
+    elif sel == 3:
+        if os.path.exists("Lista1000.csv"):
+            os.remove("Lista1000.csv")
+            print("Fichero de 1000 borrado")
+
+        if os.path.exists("Lista50.csv"):
+            os.remove("Lista50.csv")
+            print("Fichero de 50 borrado")
+
+        else:
+            ""
+            
+        print("\n")
+        
+    
     else:
-        print("introduce un numero valido")
+        print("introduce numero valido lol\n")
+        
